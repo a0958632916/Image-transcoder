@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>圖片轉碼小工具 (Base64)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full text-center">
+        <h1 class="text-2xl font-black text-slate-800 mb-2">圖片轉碼器</h1>
+        <p class="text-sm text-slate-500 mb-6">把您的圖片轉成網頁代碼，貼到 HTML 裡就不會消失！</p>
+        
+        <input type="file" id="fileInput" accept="image/*" class="block w-full text-sm text-slate-500
+          file:mr-4 file:py-2 file:px-4
+          file:rounded-full file:border-0
+          file:text-sm file:font-semibold
+          file:bg-emerald-50 file:text-emerald-700
+          hover:file:bg-emerald-100 mb-4
+        "/>
+
+        <textarea id="output" rows="6" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-mono text-slate-500 mb-4" placeholder="這裡會出現代碼，請全選複製..."></textarea>
+
+        <button onclick="copyText()" class="bg-emerald-600 text-white px-6 py-2 rounded-full font-bold hover:bg-emerald-700 transition">
+            複製代碼
+        </button>
+        
+        <div id="preview" class="mt-6 border-2 border-dashed border-slate-200 rounded-lg p-2 min-h-[100px] flex items-center justify-center text-slate-400 text-xs">
+            圖片預覽區
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const output = document.getElementById('output');
+        const preview = document.getElementById('preview');
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64 = event.target.result;
+                    // 生成完整的 img 標籤
+                    const imgTag = `<img src="${base64}" style="width:100%; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">`;
+                    output.value = imgTag;
+                    preview.innerHTML = `<img src="${base64}" class="max-h-48 rounded-lg">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function copyText() {
+            output.select();
+            document.execCommand("copy");
+            alert("代碼已複製！請貼到比較表 HTML 的 <body> 標籤下方。");
+        }
+    </script>
+</body>
+</html>
